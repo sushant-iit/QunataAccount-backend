@@ -1,0 +1,19 @@
+{
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": true,
+  "workbench.statusBar.visible": true,
+  "workbench.activityBar.visible": true,
+  "editor.wordWrap": "on",
+  "editor.trimAutoWhitespace": false,
+  "eslint.run": "onSave",
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#18bdda",
+    "statusBar.noFolderBackground": "#6d21d1",
+    "statusBar.debuggingBackground": "#263238"
+  },
+  "editor.tokenColorCustomizations": {
+    "comments": "#000000",
+    "functions": "#f304f3"
+  }
+}
