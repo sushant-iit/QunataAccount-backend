@@ -2,16 +2,28 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const app = require('./app');
 
-//DATABASE Connection
+//Configuring dotenv File:
+dotenv.config({ path: './config.env' });
+
+//DATABASE Connection:
 mongoose
-  .connect(process.env.DATABASE_URL, {
-    useCreateIndex: true,
-    useNewUrlParser: true,
-  })
+  .connect(
+    process.env.DATABASE_URL.replace(
+      '<password>',
+      process.env.DATABASE_PASSWORD
+    ),
+    {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+      useFindAndModify: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => {
     console.log('Database connected Successfully...');
   });
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000...');
+//Starting the Server:
+app.listen(process.env.PORT, () => {
+  console.log(`Listening on port ${process.env.PORT}...`);
 });

@@ -13,7 +13,7 @@
     "statusBar.debuggingBackground": "#263238"
   },
   "editor.tokenColorCustomizations": {
-    "comments": "#000000",
+    "comments": "#b1b1b1",
     "functions": "#f304f3"
   }
 }
