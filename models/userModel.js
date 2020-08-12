@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-const UserScchema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please tell us your name!'],
@@ -28,6 +29,7 @@ const UserScchema = mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password!'],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -43,9 +45,23 @@ const UserScchema = mongoose.Schema({
   isActive: {
     type: Boolean,
     default: false,
+    select: false,
+  },
+  userActivationToken: {
+    type: String,
+    default: null,
+    select: false,
   },
 });
 
-const User = mongoose.model('User', UserScchema);
+//Encrypting Passwords-------------------------------------------------------------------------------------------------------------------
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordConfirm = undefined;
+  next();
+});
+
+const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

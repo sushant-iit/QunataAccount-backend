@@ -9,11 +9,11 @@ const emailTemplate = fs.readFileSync(
 );
 
 module.exports = class Email {
-  constructor(user, url, baseURL) {
+  constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0].toUpperCase();
     this.url = url;
-    this.baseURL = baseURL;
+    this.baseURL = process.env.BASE_URL_EMAIL;
     this.from = `<krsushant.sk@gmail.com>`;
   }
 
@@ -52,17 +52,14 @@ module.exports = class Email {
   async send(buttonText, mainDescription, subject, bodyHeader) {
     //1)Creating required html page from the template:
     const html = emailTemplate
-      .replace('%FIRST_NAME%', this.firstName)
-      .replace('%BASE_URL%', this.baseURL)
-      .replace('%URL%', this.url)
-      .replace('%BUTTON_TEXT%', buttonText)
-      .replace('%MAIN_DESCRIPTION%', mainDescription)
-      .replace('%BODY_HEADER%', bodyHeader)
-      .replace(
-        '%BODY_TITLE%',
-        'Or, Alternatively! You can copy and paste the below link in your browser to do so:'
-      )
-      .replace('%BODY_DESCRIPTION%', this.url);
+      .replace(/%FIRST_NAME%/g, this.firstName)
+      .replace(/%BASE_URL%/g, process.env.BASE_URL_EMAIL)
+      .replace(/%URL%/g, this.url)
+      .replace(/%BUTTON_TEXT%/g, buttonText)
+      .replace(/%MAIN_DESCRIPTION%/g, mainDescription)
+      .replace(/%BODY_HEADER%/g, bodyHeader)
+      .replace('%BODY_TITLE%', `Hola!! ${this.firstName}`)
+      .replace('%BODY_DESCRIPTION%', "We're glad to have you in the ride!");
 
     //2)Setting email Options
     const mailOptions = {
