@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/userModel');
 const catchAsync = require('../utility/catchAsync');
 const Email = require('../utility/email');
+const AppError = require('../utility/appError');
 
 exports.signup = catchAsync(async (req, res, next) => {
   //1)Generating the token and encrypting it:
@@ -23,13 +24,23 @@ exports.signup = catchAsync(async (req, res, next) => {
     userActivationToken: userActivationTokenEncrypted,
   });
 
-  //3) Generating the url and sending it to the user as an Email:
-  const url = `${req.protocol}://${req.get(
-    'host'
-  )}/api/users/${userActivationToken}`;
-  await new Email(newuser, url).sendActivationEmail();
+  try {
+    //3) Generating the url and sending it to the user as an Email:
+    const url = `${req.protocol}://${req.get(
+      'host'
+    )}/api/users/activate/${userActivationToken}`;
+    await new Email(newuser, url).sendActivationEmail();
+  } catch (err) {
+    await User.findByIdAndDelete(newuser._id);
+    return next(
+      new AppError(
+        'There was problem sending activation email. So, the user was not created.',
+        500
+      )
+    );
+  }
 
-  //4)Sending back the response
+  //4)Sending back the response:
   newuser.password = undefined;
   newuser.userActivationToken = undefined;
   newuser.userActivationTokenCreationTime = undefined;
@@ -37,4 +48,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     status: 200,
     data: newuser,
   });
+});
+
+exports.activateUser = catchAsync(async (req, res, next) => {
+  let { token } = req.params;
 });

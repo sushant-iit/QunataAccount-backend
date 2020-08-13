@@ -49,7 +49,7 @@ module.exports = class Email {
     });
   }
 
-  async send(buttonText, mainDescription, subject, bodyHeader) {
+  send(buttonText, mainDescription, subject, bodyHeader) {
     //1)Creating required html page from the template:
     const html = emailTemplate
       .replace(/%FIRST_NAME%/g, this.firstName)
@@ -61,7 +61,7 @@ module.exports = class Email {
       .replace('%BODY_TITLE%', `Hola!! ${this.firstName}`)
       .replace('%BODY_DESCRIPTION%', "We're glad to have you in the ride!");
 
-    //2)Setting email Options
+    //2)Setting email Options:
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -69,16 +69,18 @@ module.exports = class Email {
       html,
     };
 
-    //3)Sending the actual email
-    await this.newTransport().sendMail(mailOptions);
+    //3)Returning the promise so that the error can be caught in the higher order calling functions and processing can be done:
+    return this.newTransport().sendMail(mailOptions);
   }
 
-  async sendActivationEmail() {
-    this.send(
+  sendActivationEmail() {
+    const sendActivationEmail = this.send(
       'Activate Now',
       'Click on the below button to activate your account',
       'Activate your QuantaAccount',
       'Hi there! You are just one step to go.'
     );
+    //Receiving the promise and forwarding it to the higher order functions calling it:
+    return sendActivationEmail;
   }
 };
