@@ -83,4 +83,14 @@ module.exports = class Email {
     //Receiving the promise and forwarding it to the higher order functions calling it:
     return sendActivationEmail;
   }
+
+  sendPasswordResetEmail() {
+    const sendPasswordResetEmail = this.send(
+      'Reset Now',
+      'Click on the button below to reset your Password',
+      'Reset your QuantaAccountPassword',
+      'If not initiated by you, you can safely ignore.'
+    );
+    return sendPasswordResetEmail;
+  }
 };

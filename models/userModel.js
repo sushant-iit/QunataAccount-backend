@@ -24,6 +24,7 @@ const UserSchema = mongoose.Schema({
     type: Date,
     //Added for converting from GMT to IST
     default: Date.now() + 19800000,
+    select: false,
   },
   password: {
     type: String,
@@ -52,6 +53,22 @@ const UserSchema = mongoose.Schema({
     default: null,
     select: false,
   },
+  userActivationTokenExpiryTime: {
+    type: Date,
+    select: false,
+  },
+  passwordResetToken: {
+    type: String,
+    default: null,
+    select: false,
+  },
+  passwordResetExpiresAt: {
+    type: Date,
+    select: false,
+  },
+  passwordChangedAt: {
+    type: Date,
+  },
 });
 
 //Encrypting Passwords-------------------------------------------------------------------------------------------------------------------
@@ -59,6 +76,15 @@ UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+  next();
+});
+
+//Entering the passwordChangedAt when password is modified:------------------------------------------------------------------------------
+UserSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
