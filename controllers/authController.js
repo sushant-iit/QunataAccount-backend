@@ -235,7 +235,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 });
 
-//It is for rendered pages with no error:-(Means we don't throw error of user is not logged in.)
+//It is for checking login with no error:-(Means we don't throw error of user is not logged in.)
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
   try {
     //1) Checking if there is token:

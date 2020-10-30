@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 const userRouter = require('./routes/userRoutes');
+const customerRouter = require('./routes/customerRoutes');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
@@ -20,6 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 
 //ROUTES---------------------------------------------------------------------------------------------------------------------------------
 app.use('/api/users', userRouter);
+app.use('/api/customers', customerRouter);
 
 //Global ErrorHandler Middleware
 app.use(globalErrorHandler);
